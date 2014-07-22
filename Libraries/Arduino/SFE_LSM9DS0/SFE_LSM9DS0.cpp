@@ -514,11 +514,22 @@ void LSM9DS0::calcaRes()
 
 void LSM9DS0::calcmRes()
 {
-	// Possible magnetometer scales (and their register bit settings) are:
-	// 2 Gs (00), 4 Gs (01), 8 Gs (10) 12 Gs (11). Here's a bit of an algorithm
-	// to calculate Gs/(ADC tick) based on that 2-bit value:
-	mRes = mScale == M_SCALE_2GS ? 2.0 / 32768.0 : 
-	       (float) (mScale << 2) / 32768.0;
+	//Directly from the datasheet (page 13), converted from milligauss to gauss
+	switch(mScale)
+	{
+		case M_SCALE_2GS:
+			mRes = .00008;
+			break;
+		case M_SCALE_4GS:
+			mRes = .00016;
+			break;
+		case M_SCALE_8GS:
+			mRes = .00032;
+			break;
+		case M_SCALE_12GS:
+			mRes = .00048;
+			break;
+	}
 }
 	
 void LSM9DS0::gWriteByte(uint8_t subAddress, uint8_t data)
